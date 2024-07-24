@@ -9,12 +9,13 @@ import org.springframework.web.client.RestTemplate;
 @Component
 public class HealthHistoryUtil {	
 	
+	 
 		
-	public static double getCPUUsage() {
+	public static double getCPUUsage() throws JSONException {
     	double cpuUsage = 0.0D; 		   
         String response = getMetricResponse(ApplicationConstants.METRICS_SERVICE_URL);       
         
-        try {
+        
 			JSONObject jsonObject = new JSONObject(response);
 			JSONArray measurements = jsonObject.getJSONArray(ApplicationConstants.API_MEASUREMENTS);
 			for (int i = 0; i < measurements.length(); i++) {
@@ -22,14 +23,12 @@ public class HealthHistoryUtil {
 				cpuUsage= Math.ceil(metricName.getDouble(ApplicationConstants.API_VALUE));	
 			}			
 			
-		} catch (JSONException e) {				
-			e.printStackTrace();
-		}
+		
         
         return cpuUsage;
     }
     
-    public static double getDiskUsage() {
+    public static double getDiskUsage() throws JSONException {
     	long diskFree = 0L;
     	long diskTotal = 0L; 
     	double diskUsagePercentage = 0.0D;
@@ -37,7 +36,7 @@ public class HealthHistoryUtil {
         String diskTotalresponse = getMetricResponse(ApplicationConstants.DISK_TOTAL_SERVICE_URL); 
         
         
-        try {
+      
 			JSONObject diskFreeJson = new JSONObject(diskFreeresponse);
 			JSONArray diskFreeMeasurements = diskFreeJson.getJSONArray(ApplicationConstants.API_MEASUREMENTS);
 			for (int i = 0; i < diskFreeMeasurements.length(); i++) {
@@ -56,9 +55,7 @@ public class HealthHistoryUtil {
 			
 			diskUsagePercentage = Math.ceil((double) (diskTotal - diskFree) / diskTotal * 100);
 			
-		} catch (JSONException e) {				
-			e.printStackTrace();
-		}
+		
         
         return  diskUsagePercentage ;
     }
